@@ -31,13 +31,13 @@
 #include <node.h>
 
 #include "QtGui/qapplication.h"
-#include "QtGui/qwidget.h"
+#include "QtWebEngine/qwebengineview.h"
 
 using namespace v8;
 
 void Initialize(Handle<Object> target) {
   QApplicationWrap::Initialize(target);
-  QWidgetWrap::Initialize(target);
+  QWebEngineViewWrap::Initialize(target);
 }
 
 NODE_MODULE(qt, Initialize)

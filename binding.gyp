@@ -5,7 +5,7 @@
       'sources': [
         'src/qt.cc', 
         'src/QtGui/qapplication.cc',
-        'src/QtGui/qwidget.cc'
+        'src/QtWebEngine/qwebengineview.cc'
       ],
       'conditions': [
         ['OS=="mac"', {
@@ -24,13 +24,13 @@
         }],
         ['OS=="linux"', {
           'cflags': [
-            '<!@(pkg-config --cflags Qt5Core Qt5Gui Qt5Widgets)'
+            '<!@(pkg-config --cflags Qt5Core Qt5Gui Qt5Widgets Qt5WebEngineWidgets)'
           ],
           'ldflags': [
-            '<!@(pkg-config --libs-only-L --libs-only-other Qt5Core Qt5Gui Qt5Widgets)'
+            '<!@(pkg-config --libs-only-L --libs-only-other Qt5Core Qt5Gui Qt5Widgets Qt5WebEngineWidgets)'
           ],
           'libraries': [
-            '<!@(pkg-config --libs-only-l Qt5Core Qt5Gui Qt5Widgets)'
+            '<!@(pkg-config --libs-only-l Qt5Core Qt5Gui Qt5Widgets Qt5WebEngineWidgets)'
           ]
         }],
         ['OS=="win"', {
