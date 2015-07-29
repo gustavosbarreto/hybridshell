@@ -4,28 +4,8 @@
       'target_name': 'qt',
       'sources': [
         'src/qt.cc', 
-
-        'src/QtCore/qsize.cc',
-        'src/QtCore/qpointf.cc',
-
         'src/QtGui/qapplication.cc',
-        'src/QtGui/qwidget.cc',
-        'src/QtGui/qmouseevent.cc',
-        'src/QtGui/qkeyevent.cc',
-        'src/QtGui/qpixmap.cc',
-        'src/QtGui/qpainter.cc',
-        'src/QtGui/qcolor.cc',
-        'src/QtGui/qbrush.cc',
-        'src/QtGui/qpen.cc',
-        'src/QtGui/qimage.cc',
-        'src/QtGui/qpainterpath.cc',
-        'src/QtGui/qfont.cc',
-        'src/QtGui/qmatrix.cc',
-        'src/QtGui/qsound.cc',
-        'src/QtGui/qscrollarea.cc',
-        'src/QtGui/qscrollbar.cc',
-
-        'src/QtTest/qtesteventlist.cc'
+        'src/QtGui/qwidget.cc'
       ],
       'conditions': [
         ['OS=="mac"', {
