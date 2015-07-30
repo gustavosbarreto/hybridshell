@@ -45,7 +45,7 @@ QApplicationWrap::QApplicationWrap() {
 
   Q_INIT_RESOURCE(qtnode);
 
-  webChannel_ = new WebChannel();
+  WebChannel::instance();
 }
 
 QApplicationWrap::~QApplicationWrap() {
@@ -108,5 +108,5 @@ Handle<Value> QApplicationWrap::WebChannelUrl(const Arguments& args) {
 
   QApplicationWrap* w = ObjectWrap::Unwrap<QApplicationWrap>(args.This());
 
-  return scope.Close(qt_v8::FromQString(w->webChannel_->url()));
+  return scope.Close(qt_v8::FromQString(WebChannel::instance()->url()));
 }

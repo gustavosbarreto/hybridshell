@@ -13,6 +13,11 @@ public:
 
 public slots:
     QVariant eval(QString str);
+
+    void sendJavaScriptToBrowser(QString str);
+
+signals:
+    void evaluateJavaScript(QString str);
 };
 
 #endif

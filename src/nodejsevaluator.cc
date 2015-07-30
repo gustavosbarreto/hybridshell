@@ -4,6 +4,8 @@
 
 #include "qt_v8.h"
 
+#include <QDebug>
+
 using namespace v8;
 
 NodeJSEvaluator::NodeJSEvaluator(): QObject()
@@ -33,4 +35,10 @@ QVariant NodeJSEvaluator::eval(QString str)
     }
 
     return QVariant();
+}
+
+
+void NodeJSEvaluator::sendJavaScriptToBrowser(QString str)
+{
+    emit evaluateJavaScript(str);
 }

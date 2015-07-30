@@ -32,6 +32,10 @@ script.onload = function() {
                 });
             }
 
+            channel.objects.NodeJSEvaluator.evaluateJavaScript.connect(function(str) {
+                eval("(" + str + ")()");
+            });
+
             var scripts = document.getElementsByTagName('script');
             for (var i = 0; i < scripts.length; i++) {
                 if (scripts[i].type == "nodejs") {
