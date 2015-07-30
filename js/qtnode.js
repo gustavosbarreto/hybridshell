@@ -32,6 +32,13 @@ script.onload = function() {
                 });
             }
 
+            var scripts = document.getElementsByTagName('script');
+            for (var i = 0; i < scripts.length; i++) {
+                if (scripts[i].type == "nodejs") {
+                    window.QtNode.exec({}, "function() { " + scripts[i].innerHTML + " }", function() { });
+                }
+            }
+
             // Finally calls onLoad callback
             QtNode.onLoad._cb();
         });
