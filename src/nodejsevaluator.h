@@ -2,6 +2,7 @@
 #define NODEJSEVALUATOR_H
 
 #include <QObject>
+#include <QVariant>
 
 class NodeJSEvaluator: public QObject
 {
@@ -11,7 +12,7 @@ public:
     NodeJSEvaluator();
 
 public slots:
-    QString eval(QString str);
+    QVariant eval(QString str);
 };
 
 #endif

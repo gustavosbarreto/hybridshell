@@ -11,7 +11,7 @@ NodeJSEvaluator::NodeJSEvaluator(): QObject()
 
 }
 
-QString NodeJSEvaluator::eval(QString str)
+QVariant NodeJSEvaluator::eval(QString str)
 {
     HandleScope scope;
 
@@ -19,7 +19,5 @@ QString NodeJSEvaluator::eval(QString str)
     Local<Value> arguments[1] = { qt_v8::FromQString(str) };
     Local<Value> result = eval->Call(Context::GetCurrent()->Global(), 1, arguments);
 
-    // FIXME: Map all types
-
-    return qt_v8::ToQString(result.As<String>());
+    return qt_v8::ValueToVariant(result);
 }
