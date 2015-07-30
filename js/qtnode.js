@@ -27,7 +27,7 @@ script.onload = function() {
             window.QtNode.exec = function(scope, func, cb) {
                 var scopeJson = JSON.stringify(scope);
 
-                channel.objects.NodeJSEvaluator.eval("(" + func.toString() + ").call(JSON.parse(\'" + scopeJson + "\'))", function(result) {
+                channel.objects.NodeJSEvaluator.eval("function require(mod) { return module.require(mod); }; (" + func.toString() + ").call(JSON.parse(\'" + scopeJson + "\'))", function(result) {
                     cb(result);
                 });
             }
