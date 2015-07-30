@@ -24,6 +24,12 @@ script.onload = function() {
             window.QtNode = channel.objects.QtNode;
             window._QtNode = window.QtNode;
 
+            window.QtNode.exec = function(func, cb) {
+                channel.objects.NodeJSEvaluator.eval("(" + func.toString() + ")()", function(result) {
+                    cb(result);
+                });
+            }
+
             // Finally calls onLoad callback
             QtNode.onLoad._cb();
         });

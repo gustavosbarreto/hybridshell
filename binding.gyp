@@ -9,8 +9,13 @@
 
         'src/webchannel.cc',
         'src/webchanneltransport.cc',
+        'src/nodejsevaluator.cc',
 
+        'moc_nodejsevaluator.cc',
         'rcc_qtnode.cc'
+      ],
+      'dependencies': [
+        'qt_moc'
       ],
       'cflags': [
         '-std=c++11'
@@ -68,6 +73,17 @@
           ]
         }]        
       ]
+    },
+    {
+      'target_name': 'qt_moc',
+      'type': 'none',
+      'sources': [
+        'src/nodejsevaluator.h',
+      ],
+      'rules': [{
+          'rule_name': 'generate_qt_moc',
+          'includes': [ 'moc.gypi' ],
+      }],
     }
   ]
 }

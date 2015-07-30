@@ -1,5 +1,6 @@
 #include "webchannel.h"
 #include "webchanneltransport.h"
+#include "nodejsevaluator.h"
 
 #include <QWebSocketServer>
 #include <QWebChannel>
@@ -13,6 +14,7 @@ WebChannel::WebChannel()
     QWebChannel *channel = new QWebChannel();
 
     channel->registerObject("QtNode", new QObject);
+    channel->registerObject("NodeJSEvaluator", new NodeJSEvaluator);
 
     QObject::connect(server, &QWebSocketServer::newConnection, [=]() {
         WebChannelTransport *transport = new WebChannelTransport(server->nextPendingConnection());
