@@ -33,6 +33,8 @@
 #include <node.h>
 #include <QApplication>
 
+class WebChannel;
+
 class QApplicationWrap : public node::ObjectWrap {
  public:
   static void Initialize(v8::Handle<v8::Object> target);
@@ -47,6 +49,10 @@ class QApplicationWrap : public node::ObjectWrap {
   // Wrapped methods
   static v8::Handle<v8::Value> ProcessEvents(const v8::Arguments& args);
   static v8::Handle<v8::Value> Exec(const v8::Arguments& args);
+
+  static v8::Handle<v8::Value> WebChannelUrl(const v8::Arguments& args);
+
+  WebChannel *webChannel_;
 
   // Wrapped object
   QApplication* q_;
