@@ -4,4 +4,5 @@ bin/
 out/
 Release/
 npm-debug.log
-
+moc_*.cc
+rcc_*.cc

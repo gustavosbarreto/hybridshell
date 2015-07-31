@@ -1,7 +1,11 @@
 #define BUILDING_NODE_EXTENSION
 #include <node.h>
 #include "qwebengineview.h"
+#include "../webchannel.h"
+#include "../nodejsevaluator.h"
 #include "../qt_v8.h"
+
+#include <QDebug>
 
 using namespace v8;
 
@@ -30,6 +34,8 @@ void QWebEngineViewWrap::Initialize(Handle<Object> target) {
       FunctionTemplate::New(Show)->GetFunction());
   tpl->PrototypeTemplate()->Set(String::NewSymbol("load"),
       FunctionTemplate::New(Load)->GetFunction());
+  tpl->PrototypeTemplate()->Set(String::NewSymbol("exec"),
+      FunctionTemplate::New(Exec)->GetFunction());
 
   constructor = Persistent<Function>::New(tpl->GetFunction());
   target->Set(String::NewSymbol("QWebEngineView"), constructor);
@@ -68,3 +74,15 @@ Handle<Value> QWebEngineViewWrap::Load(const Arguments& args) {
   return scope.Close(Undefined());
 }
 
+Handle<Value> QWebEngineViewWrap::Exec(const Arguments& args) {
+  HandleScope scope;
+
+  QWebEngineViewWrap* w = node::ObjectWrap::Unwrap<QWebEngineViewWrap>(args.This());
+  QWebEngineView* q = w->GetWrapped();
+
+  if (args[0]->IsString()) {
+      WebChannel::instance()->nodeJSEvaluator()->sendJavaScriptToBrowser(QString(*v8::String::Utf8Value(args[0]->ToString())));
+  }
+
+  return scope.Close(Undefined());
+}

@@ -5,8 +5,33 @@
       'sources': [
         'src/qt.cc', 
         'src/QtGui/qapplication.cc',
-        'src/QtWebEngine/qwebengineview.cc'
+        'src/QtWebEngine/qwebengineview.cc',
+
+        'src/webchannel.cc',
+        'src/webchanneltransport.cc',
+        'src/nodejsevaluator.cc',
+
+        'moc_nodejsevaluator.cc',
+        'rcc_qtnode.cc'
       ],
+      'dependencies': [
+        'qt_moc'
+      ],
+      'cflags': [
+        '-std=c++11'
+      ],
+      'actions': [{
+        'action_name': 'generate_rcc',
+        'variables': {
+          'rcc_file': 'qtnode.qrc',
+          'resources': [
+            'js/qtnode.js',
+          ],
+          'rcc_output': 'qtnode.cc',
+          'rcc_name': 'qtnode',
+        },
+        'includes': [ 'qrcc.gypi' ],
+      }],
       'conditions': [
         ['OS=="mac"', {
           'include_dirs': [
@@ -24,13 +49,13 @@
         }],
         ['OS=="linux"', {
           'cflags': [
-            '<!@(pkg-config --cflags Qt5Core Qt5Gui Qt5Widgets Qt5WebEngineWidgets)'
+            '<!@(pkg-config --cflags Qt5Core Qt5Gui Qt5Widgets Qt5WebEngineWidgets Qt5WebSockets Qt5WebChannel)'
           ],
           'ldflags': [
-            '<!@(pkg-config --libs-only-L --libs-only-other Qt5Core Qt5Gui Qt5Widgets Qt5WebEngineWidgets)'
+            '<!@(pkg-config --libs-only-L --libs-only-other Qt5Core Qt5Gui Qt5Widgets Qt5WebEngineWidgets Qt5WebSockets Qt5WebChannel)'
           ],
           'libraries': [
-            '<!@(pkg-config --libs-only-l Qt5Core Qt5Gui Qt5Widgets Qt5WebEngineWidgets)'
+            '<!@(pkg-config --libs-only-l Qt5Core Qt5Gui Qt5Widgets Qt5WebEngineWidgets Qt5WebSockets)'
           ]
         }],
         ['OS=="win"', {
@@ -48,6 +73,17 @@
           ]
         }]        
       ]
+    },
+    {
+      'target_name': 'qt_moc',
+      'type': 'none',
+      'sources': [
+        'src/nodejsevaluator.h',
+      ],
+      'rules': [{
+          'rule_name': 'generate_qt_moc',
+          'includes': [ 'moc.gypi' ],
+      }],
     }
   ]
 }
