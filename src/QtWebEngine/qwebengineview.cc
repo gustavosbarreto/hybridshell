@@ -17,6 +17,7 @@ Persistent<Function> QWebEngineViewWrap::constructor;
 
 QWebEngineViewWrap::QWebEngineViewWrap(const Arguments& args) {
   q_ = new QWebEngineView();
+  uuid_ = QUuid::createUuid();
 }
 
 QWebEngineViewWrap::~QWebEngineViewWrap() {
@@ -36,6 +37,8 @@ void QWebEngineViewWrap::Initialize(Handle<Object> target) {
       FunctionTemplate::New(Load)->GetFunction());
   tpl->PrototypeTemplate()->Set(String::NewSymbol("exec"),
       FunctionTemplate::New(Exec)->GetFunction());
+  tpl->PrototypeTemplate()->Set(String::NewSymbol("uuid"),
+      FunctionTemplate::New(Uuid)->GetFunction());
 
   constructor = Persistent<Function>::New(tpl->GetFunction());
   target->Set(String::NewSymbol("QWebEngineView"), constructor);
@@ -81,8 +84,19 @@ Handle<Value> QWebEngineViewWrap::Exec(const Arguments& args) {
   QWebEngineView* q = w->GetWrapped();
 
   if (args[0]->IsString()) {
-      WebChannel::instance()->nodeJSEvaluator()->sendJavaScriptToBrowser(QString(*v8::String::Utf8Value(args[0]->ToString())));
+      WebChannel::instance()->nodeJSEvaluator()->sendJavaScriptToBrowser(w->uuid_, QString(*v8::String::Utf8Value(args[0]->ToString())));
   }
 
   return scope.Close(Undefined());
+}
+
+Handle<Value> QWebEngineViewWrap::Uuid(const Arguments& args) {
+  HandleScope scope;
+
+  QWebEngineViewWrap* w = node::ObjectWrap::Unwrap<QWebEngineViewWrap>(args.This());
+  QWebEngineView* q = w->GetWrapped();
+
+  Local<Value> uuid = qt_v8::FromQString(w->uuid_.toString());
+
+  return scope.Close(uuid);
 }

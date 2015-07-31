@@ -14,6 +14,8 @@ script.onload = function() {
     var url = (/[?&]webChannel=([A-Za-z0-9\-:/\.]+)/.exec(decodeURIComponent(location.search))[1]);
     var socket = new WebSocket(url);
 
+    var uuid = (/[?&]qtNodeUuid=([A-Za-z0-9\-:/\.\{\}]+)/.exec(decodeURIComponent(location.search))[1]);
+
     socket.onopen = function() {
         new QWebChannel(socket, function(channel) {
             // Once this callback is invoked, the QtNode object is acessible. Thus,
@@ -32,8 +34,10 @@ script.onload = function() {
                 });
             }
 
-            channel.objects.NodeJSEvaluator.evaluateJavaScript.connect(function(str) {
-                eval("(" + str + ")()");
+            channel.objects.NodeJSEvaluator.evaluateJavaScript.connect(function(uuid_, str) {
+                if (uuid == uuid_) {
+                    eval("(" + str + ")()");
+                }
             });
 
             var scripts = document.getElementsByTagName('script');

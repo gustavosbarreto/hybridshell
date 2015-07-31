@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QVariant>
+#include <QUuid>
 
 class NodeJSEvaluator: public QObject
 {
@@ -14,10 +15,10 @@ public:
 public slots:
     QVariant eval(QString str);
 
-    void sendJavaScriptToBrowser(QString str);
+    void sendJavaScriptToBrowser(const QUuid &uuid, QString str);
 
 signals:
-    void evaluateJavaScript(QString str);
+    void evaluateJavaScript(QString uuid, QString str);
 };
 
 #endif

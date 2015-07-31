@@ -4,6 +4,7 @@
 #define BUILDING_NODE_EXTENSION
 #include <node.h>
 #include <QWebEngineView>
+#include <QUuid>
 
 //
 // QWebEngineViewWrap()
@@ -23,9 +24,12 @@ class QWebEngineViewWrap : public node::ObjectWrap {
   static v8::Handle<v8::Value> Show(const v8::Arguments& args);
   static v8::Handle<v8::Value> Load(const v8::Arguments& args);
   static v8::Handle<v8::Value> Exec(const v8::Arguments& args);
+  static v8::Handle<v8::Value> Uuid(const v8::Arguments& args);
 
   // Wrapped object
   QWebEngineView* q_;
+
+  QUuid uuid_;
 };
 
 #endif
