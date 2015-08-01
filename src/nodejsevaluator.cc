@@ -38,7 +38,7 @@ QVariant NodeJSEvaluator::eval(QString str)
 }
 
 
-void NodeJSEvaluator::sendJavaScriptToBrowser(const QUuid &uuid, QString str)
+void NodeJSEvaluator::sendJavaScriptToBrowser(const QUuid &uuid, QString str, const QVariant &thisArgs)
 {
-    emit evaluateJavaScript(uuid.toString(), str);
+    emit evaluateJavaScript(uuid.toString(), str, thisArgs);
 }

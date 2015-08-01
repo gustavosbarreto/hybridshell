@@ -27,9 +27,9 @@ function initializeWebChannel(socket) {
         }
 
         // This SLOT evaluates the 'code' in browser context when QWebEngineView.exec is called in the Node.js context
-        channel.objects.NodeJSEvaluator.evaluateJavaScript.connect(function(uuid, code) {
+        channel.objects.NodeJSEvaluator.evaluateJavaScript.connect(function(uuid, code, thisArgs) {
             if (uuid == getURLParam("qtNodeUuid")) {
-                var compiledCode = compileScriptTemplate(browserScriptTemplate, { code: code });
+                var compiledCode = compileScriptTemplate(browserScriptTemplate, { code: code, thisArgs: JSON.stringify(thisArgs) });
 
                 eval(compiledCode);
             }
@@ -92,7 +92,7 @@ function require(mod) {
 // This script template is used to evaluate an JavaScript code in Nodejs context
 var browserScriptTemplate = function() {/*!
 
-(#{code})();
+(#{code}).call(JSON.parse('#{thisArgs}'));
 
 */}
 

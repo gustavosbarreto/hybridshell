@@ -5,6 +5,7 @@
 #include "../nodejsevaluator.h"
 #include "../qt_v8.h"
 
+#include <QVariantList>
 #include <QDebug>
 
 using namespace v8;
@@ -84,7 +85,16 @@ Handle<Value> QWebEngineViewWrap::Exec(const Arguments& args) {
   QWebEngineView* q = w->GetWrapped();
 
   if (args[0]->IsString()) {
-      WebChannel::instance()->nodeJSEvaluator()->sendJavaScriptToBrowser(w->uuid_, QString(*v8::String::Utf8Value(args[0]->ToString())));
+      QVariant thisArgs;
+
+      if (args.Length() > 1) {
+          Local<Value> value = args[1];
+          thisArgs = qt_v8::ValueToVariant(value);
+      }
+
+      WebChannel::instance()->nodeJSEvaluator()->sendJavaScriptToBrowser(w->uuid_,
+                                                                         QString(*v8::String::Utf8Value(args[0]->ToString())),
+                                                                         thisArgs);
   }
 
   return scope.Close(Undefined());

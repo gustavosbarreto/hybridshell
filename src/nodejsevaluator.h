@@ -15,10 +15,10 @@ public:
 public slots:
     QVariant eval(QString str);
 
-    void sendJavaScriptToBrowser(const QUuid &uuid, QString str);
+    void sendJavaScriptToBrowser(const QUuid &uuid, QString str, const QVariant &thisArgs);
 
 signals:
-    void evaluateJavaScript(QString uuid, QString str);
+    void evaluateJavaScript(QString uuid, QString str, QVariant thisArgs);
 };
 
 #endif
