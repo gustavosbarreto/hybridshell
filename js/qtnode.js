@@ -31,7 +31,11 @@ function initializeWebChannel(socket) {
             if (uuid == getURLParam("qtNodeUuid")) {
                 var compiledCode = compileScriptTemplate(browserScriptTemplate, { code: code, thisArgs: JSON.stringify(thisArgs) });
 
-                eval(compiledCode);
+                try {
+                    eval(compiledCode);
+                } catch (e) {
+                    alert(e.toString());
+                }
             }
         });
 
