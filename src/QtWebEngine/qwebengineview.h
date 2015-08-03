@@ -1,8 +1,9 @@
 #ifndef QWEBENGINEVIEWWRAP_H
 #define QWEBENGINEVIEWWRAP_H
 
-#define BUILDING_NODE_EXTENSION
 #include <node.h>
+#include <node_object_wrap.h>
+
 #include <QWebEngineView>
 #include <QUuid>
 
@@ -15,16 +16,16 @@ class QWebEngineViewWrap : public node::ObjectWrap {
   QWebEngineView* GetWrapped() const { return q_; };
 
  private:
-  QWebEngineViewWrap(const v8::Arguments& args);
+  QWebEngineViewWrap(const v8::FunctionCallbackInfo<v8::Value>& args);
   ~QWebEngineViewWrap();
   static v8::Persistent<v8::Function> constructor;
-  static v8::Handle<v8::Value> New(const v8::Arguments& args);
+  static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
 
   // Wrapped methods
-  static v8::Handle<v8::Value> Show(const v8::Arguments& args);
-  static v8::Handle<v8::Value> Load(const v8::Arguments& args);
-  static v8::Handle<v8::Value> Exec(const v8::Arguments& args);
-  static v8::Handle<v8::Value> Uuid(const v8::Arguments& args);
+  static void Show(const v8::FunctionCallbackInfo<v8::Value>& args);
+  static void Load(const v8::FunctionCallbackInfo<v8::Value>& args);
+  static void Exec(const v8::FunctionCallbackInfo<v8::Value>& args);
+  static void Uuid(const v8::FunctionCallbackInfo<v8::Value>& args);
 
   // Wrapped object
   QWebEngineView* q_;

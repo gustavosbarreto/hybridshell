@@ -13,11 +13,11 @@ inline QString ToQString(v8::Local<v8::String> str) {
   return QString::fromUtf16( *v8::String::Value(str) );
 }
 
-inline v8::Local<v8::String> FromQString(QString str) {
-  return v8::String::New( str.utf16() );
+inline v8::Local<v8::String> FromQString(v8::Isolate *isolate, QString str) {
+  return v8::String::NewFromUtf8( isolate, str.toUtf8() );
 }
 
-inline QVariant ValueToVariant(Local<Value> &value) {
+inline QVariant ValueToVariant(v8::Isolate *isolate, Local<Value> &value) {
     QVariant ret;
 
     if (value->IsString()) {
@@ -35,10 +35,10 @@ inline QVariant ValueToVariant(Local<Value> &value) {
         QVariantMap map;
 
         for (uint32_t i = 0; i < properties->Length(); i++) {
-            Local<Value> key = properties->Get(Number::New(i));
+            Local<Value> key = properties->Get(Number::New(isolate, i));
             Local<Value> val = obj->Get(key);
 
-            map[ToQString(key.As<String>())] = ValueToVariant(val);
+            map[ToQString(key.As<String>())] = ValueToVariant(isolate, val);
         }
 
         ret = map;
@@ -50,7 +50,7 @@ inline QVariant ValueToVariant(Local<Value> &value) {
         for (uint32_t i = 0; i < array->Length(); i++) {
             Local<Value> val = array->Get(i);
 
-            list.append(ValueToVariant(val));
+            list.append(ValueToVariant(isolate, val));
         }
 
         ret = list;

@@ -1,4 +1,3 @@
-#define BUILDING_NODE_EXTENSION
 #include <node.h>
 #include "qwebengineview.h"
 #include "../webchannel.h"
@@ -6,7 +5,6 @@
 #include "../qt_v8.h"
 
 #include <QVariantList>
-#include <QDebug>
 
 using namespace v8;
 
@@ -16,7 +14,7 @@ Persistent<Function> QWebEngineViewWrap::constructor;
 // QWebEngineViewWrap()
 //
 
-QWebEngineViewWrap::QWebEngineViewWrap(const Arguments& args) {
+QWebEngineViewWrap::QWebEngineViewWrap(const FunctionCallbackInfo<v8::Value>& args) {
   q_ = new QWebEngineView();
   uuid_ = QUuid::createUuid();
 }
@@ -26,47 +24,43 @@ QWebEngineViewWrap::~QWebEngineViewWrap() {
 }
 
 void QWebEngineViewWrap::Initialize(Handle<Object> target) {
+  Isolate *isolate = Isolate::GetCurrent();
+
   // Prepare constructor template
-  Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
-  tpl->SetClassName(String::NewSymbol("QWebEngineView"));
+  Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
+  tpl->SetClassName(String::NewFromUtf8(isolate, "QWebEngineView"));
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
   // Wrapped methods
-  tpl->PrototypeTemplate()->Set(String::NewSymbol("show"),
-      FunctionTemplate::New(Show)->GetFunction());
-  tpl->PrototypeTemplate()->Set(String::NewSymbol("load"),
-      FunctionTemplate::New(Load)->GetFunction());
-  tpl->PrototypeTemplate()->Set(String::NewSymbol("exec"),
-      FunctionTemplate::New(Exec)->GetFunction());
-  tpl->PrototypeTemplate()->Set(String::NewSymbol("uuid"),
-      FunctionTemplate::New(Uuid)->GetFunction());
+  NODE_SET_PROTOTYPE_METHOD(tpl, "show", Show);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "load", Load);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "exec", Exec);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "uuid", Uuid);
 
-  constructor = Persistent<Function>::New(tpl->GetFunction());
-  target->Set(String::NewSymbol("QWebEngineView"), constructor);
+  constructor.Reset(isolate, tpl->GetFunction());
+  target->Set(String::NewFromUtf8(isolate, "QWebEngineView"), tpl->GetFunction());
 }
 
-Handle<Value> QWebEngineViewWrap::New(const Arguments& args) {
-  HandleScope scope;
+void QWebEngineViewWrap::New(const FunctionCallbackInfo<v8::Value>& args) {
+  HandleScope scope(Isolate::GetCurrent());
 
   QWebEngineViewWrap* w = new QWebEngineViewWrap(args);
   w->Wrap(args.This());
 
-  return args.This();
+  args.GetReturnValue().Set(args.This());
 }
 
-Handle<Value> QWebEngineViewWrap::Show(const Arguments& args) {
-  HandleScope scope;
+void QWebEngineViewWrap::Show(const FunctionCallbackInfo<v8::Value>& args) {
+  HandleScope scope(Isolate::GetCurrent());
 
   QWebEngineViewWrap* w = node::ObjectWrap::Unwrap<QWebEngineViewWrap>(args.This());
   QWebEngineView* q = w->GetWrapped();
 
   q->show();
-
-  return scope.Close(Undefined());
 }
 
-Handle<Value> QWebEngineViewWrap::Load(const Arguments& args) {
-  HandleScope scope;
+void QWebEngineViewWrap::Load(const FunctionCallbackInfo<v8::Value>& args) {
+  HandleScope scope(Isolate::GetCurrent());
 
   QWebEngineViewWrap* w = node::ObjectWrap::Unwrap<QWebEngineViewWrap>(args.This());
   QWebEngineView* q = w->GetWrapped();
@@ -74,12 +68,10 @@ Handle<Value> QWebEngineViewWrap::Load(const Arguments& args) {
   if (args[0]->IsString()) {
     q->load(QUrl(QString(*v8::String::Utf8Value(args[0]->ToString()))));
   }
-
-  return scope.Close(Undefined());
 }
 
-Handle<Value> QWebEngineViewWrap::Exec(const Arguments& args) {
-  HandleScope scope;
+void QWebEngineViewWrap::Exec(const FunctionCallbackInfo<v8::Value>& args) {
+  HandleScope scope(Isolate::GetCurrent());
 
   QWebEngineViewWrap* w = node::ObjectWrap::Unwrap<QWebEngineViewWrap>(args.This());
   QWebEngineView* q = w->GetWrapped();
@@ -89,24 +81,22 @@ Handle<Value> QWebEngineViewWrap::Exec(const Arguments& args) {
 
       if (args.Length() > 1) {
           Local<Value> value = args[1];
-          thisArgs = qt_v8::ValueToVariant(value);
+          thisArgs = qt_v8::ValueToVariant(Isolate::GetCurrent(), value);
       }
 
       WebChannel::instance()->nodeJSEvaluator()->sendJavaScriptToBrowser(w->uuid_,
                                                                          QString(*v8::String::Utf8Value(args[0]->ToString())),
                                                                          thisArgs);
   }
-
-  return scope.Close(Undefined());
 }
 
-Handle<Value> QWebEngineViewWrap::Uuid(const Arguments& args) {
-  HandleScope scope;
+void QWebEngineViewWrap::Uuid(const FunctionCallbackInfo<v8::Value>& args) {
+  HandleScope scope(Isolate::GetCurrent());
 
   QWebEngineViewWrap* w = node::ObjectWrap::Unwrap<QWebEngineViewWrap>(args.This());
   QWebEngineView* q = w->GetWrapped();
 
-  Local<Value> uuid = qt_v8::FromQString(w->uuid_.toString());
+  Local<Value> uuid = qt_v8::FromQString(Isolate::GetCurrent(), w->uuid_.toString());
 
-  return scope.Close(uuid);
+  args.GetReturnValue().Set(uuid);
 }

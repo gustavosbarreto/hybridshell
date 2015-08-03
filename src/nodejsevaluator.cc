@@ -15,11 +15,11 @@ NodeJSEvaluator::NodeJSEvaluator(): QObject()
 
 QVariant NodeJSEvaluator::eval(QString str)
 {
-    HandleScope scope;
+    HandleScope scope(Isolate::GetCurrent());
 
     TryCatch trycatch;
 
-    Local<Script> script = Script::Compile(qt_v8::FromQString(str));
+    Local<Script> script = Script::Compile(qt_v8::FromQString(Isolate::GetCurrent(), str));
 	if (script.IsEmpty()) {
         Local<Message> message = trycatch.Message();
         qDebug() << qt_v8::ToQString(message->Get());
@@ -30,13 +30,12 @@ QVariant NodeJSEvaluator::eval(QString str)
             Local<Message> message = trycatch.Message();
             qDebug() << qt_v8::ToQString(message->Get());
         } else {
-            return qt_v8::ValueToVariant(result);
+            return qt_v8::ValueToVariant(Isolate::GetCurrent(), result);
         }
     }
 
     return QVariant();
 }
-
 
 void NodeJSEvaluator::sendJavaScriptToBrowser(const QUuid &uuid, QString str, const QVariant &thisArgs)
 {

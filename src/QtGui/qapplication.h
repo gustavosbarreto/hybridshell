@@ -2,6 +2,8 @@
 #define QAPPLICATIONWRAP_H
 
 #include <node.h>
+#include <node_object_wrap.h>
+
 #include <QApplication>
 
 class WebChannel;
@@ -15,13 +17,13 @@ class QApplicationWrap : public node::ObjectWrap {
   QApplicationWrap();
   ~QApplicationWrap();
   static v8::Persistent<v8::Function> constructor;
-  static v8::Handle<v8::Value> New(const v8::Arguments& args);
+  static void New(const v8::FunctionCallbackInfo<v8::Value>& args);
 
   // Wrapped methods
-  static v8::Handle<v8::Value> ProcessEvents(const v8::Arguments& args);
-  static v8::Handle<v8::Value> Exec(const v8::Arguments& args);
+  static void ProcessEvents(const v8::FunctionCallbackInfo<v8::Value>& args);
+  static void Exec(const v8::FunctionCallbackInfo<v8::Value>& args);
 
-  static v8::Handle<v8::Value> WebChannelUrl(const v8::Arguments& args);
+  static void WebChannelUrl(const v8::FunctionCallbackInfo<v8::Value>& args);
 
   WebChannel *webChannel_;
 

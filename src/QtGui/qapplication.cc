@@ -1,4 +1,3 @@
-#define BUILDING_NODE_EXTENSION
 #include <node.h>
 #include "qapplication.h"
 #include "../webchannel.h"
@@ -24,60 +23,51 @@ QApplicationWrap::~QApplicationWrap() {
 }
 
 void QApplicationWrap::Initialize(Handle<Object> target) {
+  Isolate *isolate = Isolate::GetCurrent();
+
   // Prepare constructor template
-  Local<FunctionTemplate> tpl = FunctionTemplate::New(New);
-  tpl->SetClassName(String::NewSymbol("QApplication"));
-  tpl->InstanceTemplate()->SetInternalFieldCount(1);  
+  Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
+  tpl->SetClassName(String::NewFromUtf8(isolate, "QApplication"));
+  tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
-  // Prototype
-  tpl->PrototypeTemplate()->Set(String::NewSymbol("processEvents"),
-      FunctionTemplate::New(ProcessEvents)->GetFunction());
-  tpl->PrototypeTemplate()->Set(String::NewSymbol("exec"),
-      FunctionTemplate::New(Exec)->GetFunction());
+  NODE_SET_PROTOTYPE_METHOD(tpl, "processEvents", ProcessEvents);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "exec", Exec);
+  NODE_SET_PROTOTYPE_METHOD(tpl, "webChannelUrl", WebChannelUrl);
 
-  tpl->PrototypeTemplate()->Set(String::NewSymbol("webChannelUrl"),
-      FunctionTemplate::New(WebChannelUrl)->GetFunction());
-
-  constructor = Persistent<Function>::New(
-      tpl->GetFunction());
-  target->Set(String::NewSymbol("QApplication"), constructor);
+  constructor.Reset(isolate, tpl->GetFunction());
+  target->Set(String::NewFromUtf8(isolate, "QApplication"), tpl->GetFunction());
 }
 
-Handle<Value> QApplicationWrap::New(const Arguments& args) {
-  HandleScope scope;
+void QApplicationWrap::New(const FunctionCallbackInfo<v8::Value>& args) {
+  HandleScope scope(Isolate::GetCurrent());
 
   QApplicationWrap* w = new QApplicationWrap();
   w->Wrap(args.This());
-
-  return args.This();
 }
 
-Handle<Value> QApplicationWrap::ProcessEvents(const Arguments& args) {
-  HandleScope scope;
+void QApplicationWrap::ProcessEvents(const FunctionCallbackInfo<v8::Value>& args) {
+  HandleScope scope(Isolate::GetCurrent());
 
   QApplicationWrap* w = ObjectWrap::Unwrap<QApplicationWrap>(args.This());
   QApplication* q = w->GetWrapped();
 
   q->processEvents();
-
-  return scope.Close(Undefined());
 }
 
-Handle<Value> QApplicationWrap::Exec(const Arguments& args) {
-  HandleScope scope;
+void QApplicationWrap::Exec(const FunctionCallbackInfo<v8::Value>& args) {
+  HandleScope scope(Isolate::GetCurrent());
 
   QApplicationWrap* w = ObjectWrap::Unwrap<QApplicationWrap>(args.This());
   QApplication* q = w->GetWrapped();
 
   q->exec();
-
-  return scope.Close(Undefined());
 }
 
-Handle<Value> QApplicationWrap::WebChannelUrl(const Arguments& args) {
-  HandleScope scope;
+void QApplicationWrap::WebChannelUrl(const FunctionCallbackInfo<v8::Value>& args) {
+  HandleScope scope(Isolate::GetCurrent());
 
   QApplicationWrap* w = ObjectWrap::Unwrap<QApplicationWrap>(args.This());
 
-  return scope.Close(qt_v8::FromQString(WebChannel::instance()->url()));
+
+  args.GetReturnValue().Set(qt_v8::FromQString(Isolate::GetCurrent(), WebChannel::instance()->url()));
 }

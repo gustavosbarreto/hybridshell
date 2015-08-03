@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 
 project(qt)
+
 set(CMAKE_AUTOMOC ON)
 
 find_package(Qt5Gui)
@@ -11,7 +12,7 @@ find_package(Qt5WebSockets)
 
 include_directories(${CMAKE_JS_INC})
 
-file(GLOB SOURCE_FILES "src/*")
+file(GLOB_RECURSE SOURCE_FILES "src/*")
 
 qt5_add_resources(RESOURCES qtnode.qrc)
 
