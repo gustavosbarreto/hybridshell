@@ -1,0 +1,6 @@
+[submodule "3rdparty/qt-event-dispatcher-libuv"]
+	path = 3rdparty/qt-event-dispatcher-libuv
+	url = https://github.com/svalaskevicius/qt-event-dispatcher-libuv.git
+[submodule "3rdparty/iojs"]
+	path = 3rdparty/iojs
+	url = https://github.com/nodejs/io.js.git
