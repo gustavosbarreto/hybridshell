@@ -9,3 +9,19 @@ qiojs is an npm compatible platform that integrate both Qt and io.js event loops
 ### What is this for?
 
 It is for who wants to run native addon module for io.js/Node.js that wraps Qt classes.
+
+## Building
+
+[source]
+----
+$ git clone git@github.com:gustavosbarreto/qiojs.git
+$ cd qiojs
+$ git submodule update --init
+$ cmake .
+$ make -j4
+----
+
+## Running
+
+After the build process has successfully finished, you should find a *qiojs* executable in the current working directory. Run the *qiojs* executable as you would with _io.js/Node.js__ executable.
+
