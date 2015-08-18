@@ -28,7 +28,8 @@ include_directories(
   ${IOJS_DIR}/deps/
   ${IOJS_DIR}/deps/v8/
   ${IOJS_DIR}/deps/uv/include/
-  ${IOJS_DIR}/deps/v8/include/)
+  ${IOJS_DIR}/deps/v8/include/
+  ${IOJS_DIR}/deps/cares/include/)
 
 file(GLOB QT_EVENT_DISPATCHER_LIBUV
   ${CMAKE_SOURCE_DIR}/3rdparty/qt-event-dispatcher-libuv/src/eventdispatcherlibuv.cpp
