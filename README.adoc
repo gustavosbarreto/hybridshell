@@ -1,0 +1,11 @@
+# qiojs
+
+Qt + io.js into a single event loop
+
+### What is this?
+
+qiojs is an npm compatible platform that integrate both Qt and io.js event loops.
+
+### What is this for?
+
+It is for who wants to run native addon module for io.js/Node.js that wraps Qt classes.
